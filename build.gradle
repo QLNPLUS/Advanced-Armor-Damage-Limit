@@ -1,14 +1,108 @@
 plugins {
-    id 'base'
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.144'
+    id 'idea'
 }
 
-group = 'com.rinko1231.armordamagelimit'
-version = '1.1.0'
+def targetProperties = new Properties()
+file('gradle.properties').withInputStream { targetProperties.load(it) }
+targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
 
-tasks.named('build') {
-    dependsOn subprojects.collect { it.tasks.named('build') }
+version = neo_version
+group = mod_group_id
+base { archivesName = 'AdvancedArmorDamageLimit-NeoForge' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = neo_version
+    parchment {
+        mappingsVersion = parchment_mappings_version
+        minecraftVersion = parchment_minecraft_version
+    }
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+        gameTestServer {
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+        data {
+            data()
+            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').absolutePath, '--existing', file('src/main/resources/').absolutePath
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
 }
 
-tasks.named('clean') {
-    dependsOn subprojects.collect { it.tasks.named('clean') }
+sourceSets.main.java.srcDir 'src/main/java'
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    implementation files(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
+}
+
+tasks.named('jar', Jar).configure {
+    from {
+        zipTree(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
+    } {
+        exclude 'META-INF/**'
+        exclude 'pack.mcmeta'
+        exclude 'net/yiran/expressionlib/YiRanExpressionLib.class'
+    }
+}
+
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    def replaceProperties = [
+            minecraft_version: minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version: neo_version,
+            loader_version_range: loader_version_range,
+            mod_id: mod_id,
+            mod_name: mod_name,
+            mod_license: mod_license,
+            mod_version: mod_version,
+            mod_authors: mod_authors,
+            mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven { url "file://${project.projectDir}/mcmodsrepo" }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }
