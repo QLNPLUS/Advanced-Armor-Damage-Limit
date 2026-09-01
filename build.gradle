@@ -24,7 +24,7 @@ targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyN
 
 version = mod_version
 group = mod_group_id
-base { archivesName = 'advancedarmordamagelimit-forge-1.20.1' }
+base { archivesName = 'advanced-armor-damage-limit-forge-1.20.1' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
