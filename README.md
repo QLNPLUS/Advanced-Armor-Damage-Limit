@@ -1,4 +1,4 @@
-# Armor Damage Limit
+# Advanced Armor Damage Limit
 
 This repository is an MIT-licensed extension of [ArmorDamageLimit](https://github.com/Rinko1231/ArmorDamageLimit).
 It provides separate build targets for Forge 1.19.2, Forge 1.20.1, NeoForge 1.21.1,
@@ -6,8 +6,8 @@ NeoForge 26.1.2, and Fabric 1.21.1.
 
 ## Expression-based durability cap
 
-Forge and NeoForge use `config/ArmorDamageLimit.toml`. Fabric uses
-`config/ArmorDamageLimit.properties`.
+Forge and NeoForge use `config/AdvancedArmorDamageLimit.toml`. Fabric uses
+`config/AdvancedArmorDamageLimit.properties`.
 
 - `Max Armor Durability Loss Percentage` is the legacy fallback.
 - `Armor Damage Expression` is empty by default. When empty, the legacy percentage is used.
