@@ -61,9 +61,10 @@ This standalone project targets Fabric 1.21.1 and requires Java 21.
 ./gradlew build
 ```
 
-The expression library was copied from the local `Auto-Leveling-1.20` Maven cache
-into `libs/`. The release JAR includes the expression classes and the applicable
-license and notice files.
+The release JAR embeds YiRanExpressionLib as a nested Fabric dependency
+resolved from JitPack. Its classes are not merged into the mod's root package,
+so another mod can bundle the same library without a duplicate-package conflict.
+The applicable license and notice files remain included.
 
 ## License
 
