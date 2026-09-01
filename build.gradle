@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.rinko1231.armordamagelimit'
-version = '1.1.0'
+version = '1.0.0'
 
 tasks.named('build') {
     dependsOn subprojects.collect { it.tasks.named('build') }
