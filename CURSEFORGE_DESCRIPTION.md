@@ -39,6 +39,48 @@ This example limits one hit to the smaller of `15 - unbreaking` and 5% of the ar
 
 When the expression is empty, the legacy percentage setting is used. The default legacy cap is 20% of the armor item's maximum durability per hit.
 
+### Expression syntax and examples
+
+The expression library supports numeric arithmetic (`+`, `-`, `*`, `/`, `%`), parentheses, comparisons (`<`, `<=`, `>`, `>=`, `==`, `!=`), and the ternary conditional operator (`condition ? when_true : when_false`). Built-in functions are `min`, `max`, `abs`, `sqrt`, and `pow`.
+
+All expressions are numeric. A comparison evaluates to `1` when true and `0` when false. Use `max(0, ...)` when a subtraction could produce a negative result.
+
+Segment by maximum durability:
+
+```text
+max_durability < 100 ? 4 : max_durability < 500 ? 10 : max_durability * 0.05
+```
+
+This returns 4 for armor below 100 maximum durability, 10 for armor from 100 through 499, and 5% of maximum durability for armor at 500 or above.
+
+Segment by Unbreaking level:
+
+```text
+unbreaking < 2 ? 12 : unbreaking < 4 ? 8 : 4
+```
+
+This returns 12 at Unbreaking levels 0-1, 8 at levels 2-3, and 4 at level 4 or higher.
+
+Combine durability tiers with Unbreaking:
+
+```text
+max(0, min(max_durability < 500 ? 10 : max_durability * 0.05, 15 - unbreaking))
+```
+
+For a 500-durability item with Unbreaking II, this evaluates to `min(25, 13) = 13`. For an 80-durability item with no Unbreaking, it evaluates to `min(10, 15) = 10`.
+
+Put the expression on one line in the configuration file:
+
+```toml
+Armor Damage Expression = "max_durability < 100 ? 4 : max_durability < 500 ? 10 : max_durability * 0.05"
+```
+
+```properties
+armor_damage_expression=max(0, min(15 - unbreaking, max_durability * 0.05))
+```
+
+The expression result is the cap for one armor item from one hit. Incoming damage can reduce the final value further. A result of `0` skips durability damage; a positive result below `1` still causes one point because item durability damage is integral. If an expression is invalid, the error is logged and that hit falls back to uncapped incoming durability damage.
+
 ### Configuration
 
 Forge and NeoForge use `config/AdvancedArmorDamageLimit.toml`.
@@ -54,11 +96,11 @@ Separate builds are provided for:
 - Forge 1.19.2
 - Forge 1.20.1
 - NeoForge 1.21.1
-- NeoForge 26.1.2
+- NeoForge 1.26.1.2
 - Fabric 1.21.1
 
 Install the JAR matching both your Minecraft version and mod loader.
 
 ### License
 
-Advanced Armor Damage Limit is released under the MIT License.
+Advanced Armor Damage Limit is released under the GNU Affero General Public License v3.0 only (AGPL-3.0-only). The project includes YiRanExpressionLib under GNU AGPL v3. See `LICENSE`, `NOTICE.md`, and `licenses/YiRanExpressionLib-LICENSE.txt` for the complete licensing information.

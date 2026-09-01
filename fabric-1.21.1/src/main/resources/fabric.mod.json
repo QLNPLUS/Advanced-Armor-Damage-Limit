@@ -8,7 +8,7 @@
     "Rinko1231",
     "extension contributors"
   ],
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "environment": "*",
   "entrypoints": {
     "main": [

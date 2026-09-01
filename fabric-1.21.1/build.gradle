@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.7.4'
+    id 'fabric-loom' version '1.10.5'
     id 'maven-publish'
     id 'idea'
 }
@@ -66,4 +66,19 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.named('jar', Jar).configure {
+    from(rootProject.file('LICENSE')) {
+        into 'META-INF/licenses/advanced-armor-damage-limit'
+    }
+    from(rootProject.file('NOTICE.md')) {
+        into 'META-INF'
+    }
+    from(rootProject.file('licenses/YiRanExpressionLib-LICENSE.txt')) {
+        into 'META-INF/licenses/yiran-expression-lib'
+    }
+    from(rootProject.file('licenses/ArmorDamageLimit-MIT-LICENSE.txt')) {
+        into 'META-INF/licenses/armor-damage-limit-original'
+    }
 }
