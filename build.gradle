@@ -11,7 +11,7 @@ targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyN
 
 version = mod_version
 group = mod_group_id
-base { archivesName = 'advancedarmordamagelimit-neoforge-1.21.1' }
+base { archivesName = 'advanced-armor-damage-limit-neoforge-1.21.1' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
