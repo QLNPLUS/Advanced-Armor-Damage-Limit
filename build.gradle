@@ -67,20 +67,23 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 sourceSets.main.java.srcDir 'src/main/java'
 
+repositories {
+    maven { url = 'https://jitpack.io' }
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    compileOnly files(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
+    def expressionLib = implementation('com.github.yiran1457:YiRanExpressionLib:1.0.0-universal:universal')
+    jarJar(expressionLib)
+
+    project.extensions.getByName('jarJar').versionInformation {
+        ranged(dependency(expressionLib), '[1.0.0-universal]')
+    }
 }
 
-tasks.named('jar', Jar).configure {
-    from {
-        zipTree(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
-    } {
-        exclude 'META-INF/**'
-        exclude 'pack.mcmeta'
-        exclude 'net/yiran/expressionlib/YiRanExpressionLib.class'
-    }
+tasks.named('build') {
+    dependsOn 'reobfJarJar'
 }
 
 tasks.named('processResources', ProcessResources).configure {
