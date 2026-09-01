@@ -1,8 +1,8 @@
 # Advanced Armor Damage Limit
 
-This repository is an MIT-licensed extension of [ArmorDamageLimit](https://github.com/Rinko1231/ArmorDamageLimit).
-It provides separate build targets for Forge 1.19.2, Forge 1.20.1, NeoForge 1.21.1,
-NeoForge 26.1.2, and Fabric 1.21.1.
+This project is released under GNU Affero General Public License v3.0 only
+(AGPL-3.0-only). It extends [ArmorDamageLimit](https://github.com/Rinko1231/ArmorDamageLimit)
+with expression-based per-item durability limits.
 
 ## Expression-based durability cap
 
@@ -24,25 +24,51 @@ Armor Damage Expression = "max(0, min(15 - unbreaking, max_durability * 0.05))"
 
 The original fire-resistant armor behavior and item blacklist are preserved. Each armor slot is evaluated independently.
 
++### Syntax and examples
+
+The expression library supports numeric arithmetic, comparison operators, parentheses,
+the ternary conditional operator, and the built-in functions `min`, `max`, `abs`,
+`sqrt`, and `pow`.
+
+```text
+max_durability < 100 ? 4 : max_durability < 500 ? 10 : max_durability * 0.05
+```
+
+This gives armor with less than 100 maximum durability a cap of 4, armor from
+100 through 499 a cap of 10, and armor with at least 500 a cap of 5 percent.
+The same expression must be written on one line in TOML or properties files.
+
+```text
+unbreaking < 2 ? 12 : unbreaking < 4 ? 8 : 4
+```
+
+This creates three Unbreaking tiers: levels 0-1 use 12, levels 2-3 use 8,
+and level 4 or higher uses 4.
+
+```text
+max(0, min(max_durability < 500 ? 10 : max_durability * 0.05, 15 - unbreaking))
+```
+
+This combines a durability-based tier with an Unbreaking-based cap. Use
+`max(0, ...)` when a subtraction could otherwise produce a negative result.
+Comparison results are numeric: true is 1 and false is 0.
+
 ## Building
 
-Java 17 is required for Forge 1.19.2 and Forge 1.20.1. Java 21 is required for
-NeoForge 1.21.1 and Fabric 1.21.1. NeoForge 26.1.2 requires Java 25.
+This standalone project targets NeoForge 1.26.1.2 and requires Java 25.
 
 ```shell
-./gradlew :forge-1.19.2:build
-./gradlew :forge-1.20.1:build
-./gradlew :neoforge-1.21.1:build
-./gradlew :neoforge-26.1.2:build
-./gradlew :fabric-1.21.1:build
+./gradlew build
 ```
 
 The expression library was copied from the local `Auto-Leveling-1.20` Maven cache
-into `libs/`. Forge 1.20.1 and NeoForge 1.21.1 use it as a separate required
-dependency. The other targets embed only its expression classes because the
-available library metadata targets different loader/version combinations.
+into `libs/`. The release JAR includes the expression classes and the applicable
+license and notice files.
 
-## Branches
+## License
 
-The additional compatibility branches are `neoforge-26.1.2`, `forge-1.19.2`, and
-`fabric-1.21.1`. The branch uses NeoForge `26.1.2.71` with Minecraft `26.1.2`.
+This project is distributed under AGPL-3.0-only. See `LICENSE` and `NOTICE.md`.
+The original Armor Damage Limit contribution retains its MIT copyright and
+permission notice. YiRanExpressionLib remains under GNU AGPL v3; its complete
+license text is in `licenses/YiRanExpressionLib-LICENSE.txt`. The original
+MIT text is in `licenses/ArmorDamageLimit-MIT-LICENSE.txt`.
