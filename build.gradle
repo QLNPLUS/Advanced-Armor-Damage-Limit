@@ -9,9 +9,9 @@ def targetProperties = new Properties()
 file('gradle.properties').withInputStream { targetProperties.load(it) }
 targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
 
-version = neo_version
+version = mod_version
 group = mod_group_id
-base { archivesName = 'AdvancedArmorDamageLimit-NeoForge' }
+base { archivesName = 'advancedarmordamagelimit-neoforge-26.1.2' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
