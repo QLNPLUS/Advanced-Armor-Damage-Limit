@@ -10,7 +10,7 @@ targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyN
 
 version = fabric_version
 group = mod_group_id
-base { archivesName = 'advancedarmordamagelimit-fabric-1.21.1' }
+base { archivesName = 'advanced-armor-damage-limit-fabric-1.21.1' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
