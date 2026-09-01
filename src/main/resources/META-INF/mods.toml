@@ -3,9 +3,9 @@ loaderVersion="[43,)"
 license="MIT"
 
 [[mods]]
-modId="armordamagelimit"
+modId="advancedarmordamagelimit"
 version="1.0.0"
-displayName="Armor Damage Limit"
+displayName="Advanced Armor Damage Limit"
 authors="Rinko1231"
 description='''
 Ensuring that the durability loss in a single hit does not exceed a percentage of the armor's maximum durability.

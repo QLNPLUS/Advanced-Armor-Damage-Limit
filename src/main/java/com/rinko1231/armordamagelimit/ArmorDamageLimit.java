@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod(ArmorDamageLimit.MOD_ID)
 public class ArmorDamageLimit {
-    public static final String MOD_ID = "armordamagelimit";
+    public static final String MOD_ID = "advancedarmordamagelimit";
 
     public ArmorDamageLimit() {
         MinecraftForge.EVENT_BUS.register(this);

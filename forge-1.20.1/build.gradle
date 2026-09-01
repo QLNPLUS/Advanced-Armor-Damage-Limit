@@ -18,13 +18,9 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-def targetProperties = new Properties()
-file('gradle.properties').withInputStream { targetProperties.load(it) }
-targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
-
 version = forge_version
 group = mod_group_id
-base { archivesName = 'ArmorDamageLimit-Forge' }
+base { archivesName = 'AdvancedArmorDamageLimit-Forge' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
@@ -37,31 +33,31 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
-                armordamagelimit {
+                advancedarmordamagelimit {
                     source sourceSets.main
                 }
             }
         }
         client {
-            property 'forge.enabledGameTestNamespaces', 'armordamagelimit'
+            property 'forge.enabledGameTestNamespaces', 'advancedarmordamagelimit'
         }
         server {
-            property 'forge.enabledGameTestNamespaces', 'armordamagelimit'
+            property 'forge.enabledGameTestNamespaces', 'advancedarmordamagelimit'
             args '--nogui'
         }
         gameTestServer {
-            property 'forge.enabledGameTestNamespaces', 'armordamagelimit'
+            property 'forge.enabledGameTestNamespaces', 'advancedarmordamagelimit'
         }
         data {
             workingDirectory project.file('run-data')
-            args '--mod', 'armordamagelimit', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'advancedarmordamagelimit', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }
 
 mixin {
-    add sourceSets.main, 'armordamagelimit.refmap.json'
-    config 'armordamagelimit.mixins.json'
+    add sourceSets.main, 'advancedarmordamagelimit.refmap.json'
+    config 'advancedarmordamagelimit.mixins.json'
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -71,6 +67,16 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation files(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
+}
+
+tasks.named('jar', Jar).configure {
+    from {
+        zipTree(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
+    } {
+        exclude 'META-INF/**'
+        exclude 'pack.mcmeta'
+        exclude 'net/yiran/expressionlib/YiRanExpressionLib.class'
+    }
 }
 
 tasks.named('processResources', ProcessResources).configure {

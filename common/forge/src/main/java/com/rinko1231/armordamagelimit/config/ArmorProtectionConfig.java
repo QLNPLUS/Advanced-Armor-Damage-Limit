@@ -2,6 +2,7 @@ package com.rinko1231.armordamagelimit.config;
 
 import com.mojang.logging.LogUtils;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -47,7 +48,7 @@ public final class ArmorProtectionConfig {
     }
 
     public static void setup() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "ArmorDamageLimit.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "AdvancedArmorDamageLimit.toml");
     }
 
     public static float limitDamage(ItemStack armorItem, float incomingDamage) {

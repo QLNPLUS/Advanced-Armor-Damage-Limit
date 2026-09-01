@@ -1,16 +1,12 @@
 plugins {
-    id 'fabric-loom' version '1.10.5'
+    id 'fabric-loom' version '1.7.4'
     id 'maven-publish'
     id 'idea'
 }
 
-def targetProperties = new Properties()
-file('gradle.properties').withInputStream { targetProperties.load(it) }
-targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
-
 version = fabric_version
 group = mod_group_id
-base { archivesName = 'ArmorDamageLimit-Fabric' }
+base { archivesName = 'AdvancedArmorDamageLimit-Fabric' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
@@ -26,7 +22,7 @@ dependencies {
 
 loom {
     mixin {
-        defaultRefmapName = 'armordamagelimit.refmap.json'
+        defaultRefmapName = 'advancedarmordamagelimit.refmap.json'
     }
 }
 
@@ -43,7 +39,6 @@ tasks.named('jar', Jar).configure {
     } {
         exclude 'META-INF/**'
         exclude 'pack.mcmeta'
-        exclude 'net/yiran/expressionlib/YiRanExpressionLib.class'
     }
     manifest {
         attributes([

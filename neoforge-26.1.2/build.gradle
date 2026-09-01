@@ -5,20 +5,13 @@ plugins {
     id 'idea'
 }
 
-def targetProperties = new Properties()
-file('gradle.properties').withInputStream { targetProperties.load(it) }
-targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
-
 version = neo_version
 group = mod_group_id
-base { archivesName = 'ArmorDamageLimit-NeoForge' }
+base { archivesName = 'AdvancedArmorDamageLimit-NeoForge' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
-    enable {
-        version = neo_version
-        disableRecompilation = true
-    }
+    version = neo_version
     runs {
         client {
             client()
@@ -67,7 +60,6 @@ tasks.named('jar', Jar).configure {
     } {
         exclude 'META-INF/**'
         exclude 'pack.mcmeta'
-        exclude 'net/yiran/expressionlib/YiRanExpressionLib.class'
     }
 }
 

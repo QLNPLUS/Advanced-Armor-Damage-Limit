@@ -6,13 +6,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypeTags;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,12 +29,7 @@ public abstract class ArmorDurabilityMixin {
                 ItemStack armorItem = armor.get(slotIndex);
                 if ((!source.isIn(DamageTypeTags.IS_FIRE) || !armorItem.getItem().isFireproof())
                         && armorItem.getItem() instanceof ArmorItem) {
-                    RegistryEntry<Enchantment> unbreaking = player.getWorld().getRegistryManager()
-                            .get(RegistryKeys.ENCHANTMENT)
-                            .getEntry(Enchantments.UNBREAKING)
-                            .orElseThrow();
-                    int unbreakingLevel = EnchantmentHelper.getLevel(unbreaking, armorItem);
-                    float damage = ArmorProtectionConfig.limitDamage(armorItem, incomingDamage, unbreakingLevel);
+                    float damage = ArmorProtectionConfig.limitDamage(armorItem, incomingDamage);
                     if (damage <= 0.0F) {
                         continue;
                     }

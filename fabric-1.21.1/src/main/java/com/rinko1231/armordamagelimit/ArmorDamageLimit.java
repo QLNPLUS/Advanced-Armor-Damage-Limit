@@ -4,7 +4,7 @@ import com.rinko1231.armordamagelimit.config.ArmorProtectionConfig;
 import net.fabricmc.api.ModInitializer;
 
 public final class ArmorDamageLimit implements ModInitializer {
-    public static final String MOD_ID = "armordamagelimit";
+    public static final String MOD_ID = "advancedarmordamagelimit";
 
     @Override
     public void onInitialize() {

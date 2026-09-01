@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.yiran.expressionlib.expr.Expression;
@@ -17,12 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ArmorProtectionConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger("ArmorDamageLimit");
+    private static final Logger LOGGER = LoggerFactory.getLogger("AdvancedArmorDamageLimit");
     private static final Set<String> ALLOWED_VARIABLES = Set.of("max_durability", "unbreaking");
     private static final Object EXPRESSION_LOCK = new Object();
     private static final Path CONFIG_FILE = FabricLoader.getInstance()
             .getConfigDir()
-            .resolve("ArmorDamageLimit.properties");
+            .resolve("AdvancedArmorDamageLimit.properties");
 
     private static volatile double maxArmorDurabilityLossPercent = 0.2D;
     private static volatile String armorDamageExpression = "";
@@ -55,7 +57,7 @@ public final class ArmorProtectionConfig {
         }
     }
 
-    public static float limitDamage(ItemStack armorItem, float incomingDamage, int unbreakingLevel) {
+    public static float limitDamage(ItemStack armorItem, float incomingDamage) {
         if (incomingDamage <= 0.0F || isBlacklisted(armorItem)) {
             return incomingDamage;
         }
@@ -72,7 +74,8 @@ public final class ArmorProtectionConfig {
                 maximumDamage = maxDurability * maxArmorDurabilityLossPercent;
             } else {
                 Expression expression = expressionFor(source);
-                maximumDamage = expression.evaluate(maxDurability, unbreakingLevel);
+                double unbreaking = EnchantmentHelper.getLevel(Enchantments.UNBREAKING, armorItem);
+                maximumDamage = expression.evaluate(maxDurability, unbreaking);
             }
         } catch (RuntimeException exception) {
             reportInvalid(source, exception);
@@ -136,9 +139,9 @@ public final class ArmorProtectionConfig {
     private static void writeDefaults(Properties properties) throws IOException {
         properties.setProperty("max_armor_durability_loss_percent", "0.2");
         properties.setProperty("armor_damage_expression", "");
-        properties.setProperty("item_protection_blacklist", "modA:armorB");
+        properties.setProperty("item_protection_blacklist", "");
         try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
-            properties.store(writer, "Armor Damage Limit configuration");
+            properties.store(writer, "Advanced Armor Damage Limit configuration");
         }
     }
 

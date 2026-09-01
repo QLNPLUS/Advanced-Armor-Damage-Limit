@@ -2,8 +2,8 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.rinko1231.armordamagelimit.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "refmap": "armordamagelimit.refmap.json",
+  "compatibilityLevel": "JAVA_25",
+  "refmap": "advancedarmordamagelimit.refmap.json",
   "mixins": [
     "ArmorDurabilityMixin"
   ],

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.yiran.expressionlib.expr.Expression;
 import net.yiran.expressionlib.expr.ExpressionBuilder;
@@ -42,7 +44,7 @@ public final class ArmorProtectionConfig {
     private ArmorProtectionConfig() {
     }
 
-    public static float limitDamage(ItemStack armorItem, float incomingDamage, int unbreakingLevel) {
+    public static float limitDamage(ItemStack armorItem, float incomingDamage) {
         if (incomingDamage <= 0.0F || isBlacklisted(armorItem)) {
             return incomingDamage;
         }
@@ -59,7 +61,8 @@ public final class ArmorProtectionConfig {
                 maximumDamage = maxDurability * maxArmorDurabilityLossPercent.get();
             } else {
                 Expression expression = expressionFor(source);
-                maximumDamage = expression.evaluate(maxDurability, unbreakingLevel);
+                double unbreaking = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, armorItem);
+                maximumDamage = expression.evaluate(maxDurability, unbreaking);
             }
         } catch (RuntimeException exception) {
             reportInvalid(source, exception);

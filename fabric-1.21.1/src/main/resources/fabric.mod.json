@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "armordamagelimit",
+  "id": "advancedarmordamagelimit",
   "version": "${version}",
-  "name": "Armor Damage Limit",
+  "name": "Advanced Armor Damage Limit",
   "description": "Limits per-hit armor durability damage with configurable expressions.",
   "authors": [
     "Rinko1231",
@@ -16,7 +16,7 @@
     ]
   },
   "mixins": [
-    "armordamagelimit.mixins.json"
+    "advancedarmordamagelimit.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.15.11",

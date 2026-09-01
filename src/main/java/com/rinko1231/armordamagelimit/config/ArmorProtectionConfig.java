@@ -31,7 +31,7 @@ public class ArmorProtectionConfig
 
     public static void setup()
     {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "ArmorDamageLimit.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "AdvancedArmorDamageLimit.toml");
     }
 
 

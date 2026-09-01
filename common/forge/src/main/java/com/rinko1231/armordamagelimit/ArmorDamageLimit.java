@@ -5,7 +5,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod(ArmorDamageLimit.MOD_ID)
 public final class ArmorDamageLimit {
-    public static final String MOD_ID = "armordamagelimit";
+    public static final String MOD_ID = "advancedarmordamagelimit";
 
     public ArmorDamageLimit() {
         ArmorProtectionConfig.setup();
