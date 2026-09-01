@@ -1,0 +1,14 @@
+.gradle/
+build/
+**/build/
+run/
+**/run/
+run-data/
+**/run-data/
+*.ipr
+*.iws
+*.iml
+out/
+**/out/
+mcmodsrepo/
+**/mcmodsrepo/
