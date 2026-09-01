@@ -8,7 +8,7 @@ on:
       release_tag:
         description: Version to publish, with or without a leading v
         required: true
-        default: 1.0.1
+        default: 1.1.0
         type: string
       target:
         description: Loader group or individual version to publish
@@ -68,7 +68,7 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
-          expected="advanced-armor-damage-limit-forge-1.19.2-${CURSEFORGE_VERSION}.jar"
+          expected="advanced-armor-damage-limit-forge-1.19.2-${CURSEFORGE_VERSION}-all.jar"
           test -f "build/libs/$expected"
           echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
       - name: Prepare current changelog
@@ -92,7 +92,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ env.CURSEFORGE_FILE }}
           version: ${{ env.CURSEFORGE_VERSION }}
-          name: advanced-armor-damage-limit-forge-1.19.2-${{ env.CURSEFORGE_VERSION }}
+          name: advanced-armor-damage-limit-forge-1.19.2-${{ env.CURSEFORGE_VERSION }}-all
           version-type: release
           changelog-file: build/curseforge-changelog.md
           loaders: forge
@@ -129,7 +129,7 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
-          expected="advanced-armor-damage-limit-forge-1.20.1-${CURSEFORGE_VERSION}.jar"
+          expected="advanced-armor-damage-limit-forge-1.20.1-${CURSEFORGE_VERSION}-all.jar"
           test -f "build/libs/$expected"
           echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
       - name: Prepare current changelog
@@ -153,7 +153,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ env.CURSEFORGE_FILE }}
           version: ${{ env.CURSEFORGE_VERSION }}
-          name: advanced-armor-damage-limit-forge-1.20.1-${{ env.CURSEFORGE_VERSION }}
+          name: advanced-armor-damage-limit-forge-1.20.1-${{ env.CURSEFORGE_VERSION }}-all
           version-type: release
           changelog-file: build/curseforge-changelog.md
           loaders: forge

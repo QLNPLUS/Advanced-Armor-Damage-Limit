@@ -52,68 +52,16 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+    maven { url = 'https://jitpack.io' }
+}
+
 dependencies {
-    implementation files(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
-}
+    def expressionLib = implementation('com.github.yiran1457:YiRanExpressionLib:1.0.0-universal:universal')
+    jarJar(expressionLib)
 
-tasks.named('jar', Jar).configure {
-    from {
-        zipTree(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
-    } {
-        exclude 'META-INF/**'
-        exclude 'pack.mcmeta'
-        exclude 'net/yiran/expressionlib/YiRanExpressionLib.class'
+    project.extensions.getByName('jarJar').versionInformation {
+        ranged(dependency(expressionLib), '[1.0.0-universal]')
     }
 }
 
-def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
-    def replaceProperties = [
-            minecraft_version: minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version: neo_version,
-            loader_version_range: loader_version_range,
-            mod_id: mod_id,
-            mod_name: mod_name,
-            mod_license: mod_license,
-            mod_version: mod_version,
-            mod_authors: mod_authors,
-            mod_description: mod_description,
-    ]
-    inputs.properties replaceProperties
-    expand replaceProperties
-    from 'src/main/templates'
-    into 'build/generated/sources/modMetadata'
-}
 
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
-
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        maven { url "file://${project.projectDir}/mcmodsrepo" }
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-tasks.named('jar', Jar).configure {
-    from(rootProject.file('LICENSE')) {
-        into 'META-INF/licenses/advanced-armor-damage-limit'
-    }
-    from(rootProject.file('NOTICE.md')) {
-        into 'META-INF'
-    }
-    from(rootProject.file('licenses/YiRanExpressionLib-LICENSE.txt')) {
-        into 'META-INF/licenses/yiran-expression-lib'
-    }
-    from(rootProject.file('licenses/ArmorDamageLimit-MIT-LICENSE.txt')) {
-        into 'META-INF/licenses/armor-damage-limit-original'
-    }
-}
