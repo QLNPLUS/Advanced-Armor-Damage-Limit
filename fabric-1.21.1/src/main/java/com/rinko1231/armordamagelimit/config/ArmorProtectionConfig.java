@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.yiran.expressionlib.expr.Expression;
@@ -57,7 +55,7 @@ public final class ArmorProtectionConfig {
         }
     }
 
-    public static float limitDamage(ItemStack armorItem, float incomingDamage) {
+    public static float limitDamage(ItemStack armorItem, float incomingDamage, int unbreakingLevel) {
         if (incomingDamage <= 0.0F || isBlacklisted(armorItem)) {
             return incomingDamage;
         }
@@ -74,8 +72,7 @@ public final class ArmorProtectionConfig {
                 maximumDamage = maxDurability * maxArmorDurabilityLossPercent;
             } else {
                 Expression expression = expressionFor(source);
-                double unbreaking = EnchantmentHelper.getLevel(Enchantments.UNBREAKING, armorItem);
-                maximumDamage = expression.evaluate(maxDurability, unbreaking);
+                maximumDamage = expression.evaluate(maxDurability, unbreakingLevel);
             }
         } catch (RuntimeException exception) {
             reportInvalid(source, exception);
@@ -141,7 +138,18 @@ public final class ArmorProtectionConfig {
         properties.setProperty("armor_damage_expression", "");
         properties.setProperty("item_protection_blacklist", "");
         try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
-            properties.store(writer, "Advanced Armor Damage Limit configuration");
+            writer.write("# Advanced Armor Damage Limit configuration\n");
+            writer.write("# Fabric uses Java properties syntax: one key=value entry per line.\n");
+            writer.write("# max_armor_durability_loss_percent is the legacy fallback; 0.2 means 20 percent.\n");
+            writer.write("# armor_damage_expression caps durability damage for each armor item.\n");
+            writer.write("# Available variables: max_durability (item maximum durability) and unbreaking (level).\n");
+            writer.write("# Use ?: for conditional tiers and min(...)/max(...) for bounds. Keep each expression on one line.\n");
+            writer.write("# Example: max(0, min(15 - unbreaking, max_durability * 0.05))\n");
+            writer.write("# Example: max_durability < 100 ? 4 : max_durability < 500 ? 10 : max_durability * 0.05\n");
+            writer.write("# Example: unbreaking >= 3 ? max_durability * 0.02 : max_durability * 0.05\n");
+            writer.write("# Leave armor_damage_expression empty to use max_armor_durability_loss_percent.\n");
+            writer.write("# item_protection_blacklist is a comma-separated list, for example minecraft:leather_helmet.\n");
+            properties.store(writer, null);
         }
     }
 

@@ -8,7 +8,7 @@ on:
       release_tag:
         description: Version to publish, with or without a leading v
         required: true
-        default: 1.0.0
+        default: 1.0.1
         type: string
       target:
         description: Loader group or individual version to publish
@@ -68,9 +68,23 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
-          mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name 'AdvancedArmorDamageLimit-Forge-*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' -print)
-          test "${#jars[@]}" -eq 1
-          echo "CURSEFORGE_FILE=${jars[0]}" >> "$GITHUB_ENV"
+          expected="advancedarmordamagelimit-forge-1.19.2-${CURSEFORGE_VERSION}.jar"
+          test -f "build/libs/$expected"
+          echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
+      - name: Prepare current changelog
+        run: |
+          version="${CURSEFORGE_VERSION}"
+          awk -v version="$version" '
+            /^##[[:space:]]+/ {
+              heading = $2
+              gsub(/^\[/, "", heading)
+              gsub(/\].*$/, "", heading)
+              if (found && heading != version) exit
+              if (heading == version) found = 1
+            }
+            found { print }
+          ' CHANGELOG.md > build/curseforge-changelog.md
+          test -s build/curseforge-changelog.md
       - name: Publish mod
         uses: Kira-NT/mc-publish@v3
         with:
@@ -78,9 +92,9 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ env.CURSEFORGE_FILE }}
           version: ${{ env.CURSEFORGE_VERSION }}
-          name: Advanced Armor Damage Limit ${{ env.CURSEFORGE_VERSION }} Forge 1.19.2
+          name: advancedarmordamagelimit-forge-1.19.2-${{ env.CURSEFORGE_VERSION }}
           version-type: release
-          changelog: Initial release of Advanced Armor Damage Limit.
+          changelog-file: build/curseforge-changelog.md
           loaders: forge
           game-versions: 1.19.2
           java: '17'
@@ -115,9 +129,23 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
-          mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name 'AdvancedArmorDamageLimit-Forge-*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' -print)
-          test "${#jars[@]}" -eq 1
-          echo "CURSEFORGE_FILE=${jars[0]}" >> "$GITHUB_ENV"
+          expected="advancedarmordamagelimit-forge-1.20.1-${CURSEFORGE_VERSION}.jar"
+          test -f "build/libs/$expected"
+          echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
+      - name: Prepare current changelog
+        run: |
+          version="${CURSEFORGE_VERSION}"
+          awk -v version="$version" '
+            /^##[[:space:]]+/ {
+              heading = $2
+              gsub(/^\[/, "", heading)
+              gsub(/\].*$/, "", heading)
+              if (found && heading != version) exit
+              if (heading == version) found = 1
+            }
+            found { print }
+          ' CHANGELOG.md > build/curseforge-changelog.md
+          test -s build/curseforge-changelog.md
       - name: Publish mod
         uses: Kira-NT/mc-publish@v3
         with:
@@ -125,9 +153,9 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ env.CURSEFORGE_FILE }}
           version: ${{ env.CURSEFORGE_VERSION }}
-          name: Advanced Armor Damage Limit ${{ env.CURSEFORGE_VERSION }} Forge 1.20.1
+          name: advancedarmordamagelimit-forge-1.20.1-${{ env.CURSEFORGE_VERSION }}
           version-type: release
-          changelog: Initial release of Advanced Armor Damage Limit.
+          changelog-file: build/curseforge-changelog.md
           loaders: forge
           game-versions: 1.20.1
           java: '17'
@@ -162,9 +190,23 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
-          mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name 'AdvancedArmorDamageLimit-NeoForge-*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' -print)
-          test "${#jars[@]}" -eq 1
-          echo "CURSEFORGE_FILE=${jars[0]}" >> "$GITHUB_ENV"
+          expected="advancedarmordamagelimit-neoforge-1.21.1-${CURSEFORGE_VERSION}.jar"
+          test -f "build/libs/$expected"
+          echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
+      - name: Prepare current changelog
+        run: |
+          version="${CURSEFORGE_VERSION}"
+          awk -v version="$version" '
+            /^##[[:space:]]+/ {
+              heading = $2
+              gsub(/^\[/, "", heading)
+              gsub(/\].*$/, "", heading)
+              if (found && heading != version) exit
+              if (heading == version) found = 1
+            }
+            found { print }
+          ' CHANGELOG.md > build/curseforge-changelog.md
+          test -s build/curseforge-changelog.md
       - name: Publish mod
         uses: Kira-NT/mc-publish@v3
         with:
@@ -172,9 +214,9 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ env.CURSEFORGE_FILE }}
           version: ${{ env.CURSEFORGE_VERSION }}
-          name: Advanced Armor Damage Limit ${{ env.CURSEFORGE_VERSION }} NeoForge 1.21.1
+          name: advancedarmordamagelimit-neoforge-1.21.1-${{ env.CURSEFORGE_VERSION }}
           version-type: release
-          changelog: Initial release of Advanced Armor Damage Limit.
+          changelog-file: build/curseforge-changelog.md
           loaders: neoforge
           game-versions: 1.21.1
           java: '21'
@@ -209,9 +251,23 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
-          mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name 'AdvancedArmorDamageLimit-NeoForge-*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' -print)
-          test "${#jars[@]}" -eq 1
-          echo "CURSEFORGE_FILE=${jars[0]}" >> "$GITHUB_ENV"
+          expected="advancedarmordamagelimit-neoforge-26.1.2-${CURSEFORGE_VERSION}.jar"
+          test -f "build/libs/$expected"
+          echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
+      - name: Prepare current changelog
+        run: |
+          version="${CURSEFORGE_VERSION}"
+          awk -v version="$version" '
+            /^##[[:space:]]+/ {
+              heading = $2
+              gsub(/^\[/, "", heading)
+              gsub(/\].*$/, "", heading)
+              if (found && heading != version) exit
+              if (heading == version) found = 1
+            }
+            found { print }
+          ' CHANGELOG.md > build/curseforge-changelog.md
+          test -s build/curseforge-changelog.md
       - name: Publish mod
         uses: Kira-NT/mc-publish@v3
         with:
@@ -219,9 +275,9 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ env.CURSEFORGE_FILE }}
           version: ${{ env.CURSEFORGE_VERSION }}
-          name: Advanced Armor Damage Limit ${{ env.CURSEFORGE_VERSION }} NeoForge 1.26.1.2
+          name: advancedarmordamagelimit-neoforge-26.1.2-${{ env.CURSEFORGE_VERSION }}
           version-type: release
-          changelog: Initial release of Advanced Armor Damage Limit.
+          changelog-file: build/curseforge-changelog.md
           loaders: neoforge
           game-versions: 26.1.2
           java: '25'
@@ -256,9 +312,23 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
-          mapfile -t jars < <(find build/libs -maxdepth 1 -type f -name 'AdvancedArmorDamageLimit-Fabric-*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar' -print)
-          test "${#jars[@]}" -eq 1
-          echo "CURSEFORGE_FILE=${jars[0]}" >> "$GITHUB_ENV"
+          expected="advancedarmordamagelimit-fabric-1.21.1-${CURSEFORGE_VERSION}.jar"
+          test -f "build/libs/$expected"
+          echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
+      - name: Prepare current changelog
+        run: |
+          version="${CURSEFORGE_VERSION}"
+          awk -v version="$version" '
+            /^##[[:space:]]+/ {
+              heading = $2
+              gsub(/^\[/, "", heading)
+              gsub(/\].*$/, "", heading)
+              if (found && heading != version) exit
+              if (heading == version) found = 1
+            }
+            found { print }
+          ' CHANGELOG.md > build/curseforge-changelog.md
+          test -s build/curseforge-changelog.md
       - name: Publish mod
         uses: Kira-NT/mc-publish@v3
         with:
@@ -266,9 +336,9 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: ${{ env.CURSEFORGE_FILE }}
           version: ${{ env.CURSEFORGE_VERSION }}
-          name: Advanced Armor Damage Limit ${{ env.CURSEFORGE_VERSION }} Fabric 1.21.1
+          name: advancedarmordamagelimit-fabric-1.21.1-${{ env.CURSEFORGE_VERSION }}
           version-type: release
-          changelog: Initial release of Advanced Armor Damage Limit.
+          changelog-file: build/curseforge-changelog.md
           loaders: fabric
           game-versions: 1.21.1
           java: '21'

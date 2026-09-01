@@ -18,9 +18,9 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = forge_version
+version = mod_version
 group = mod_group_id
-base { archivesName = 'AdvancedArmorDamageLimit-Forge' }
+base { archivesName = 'advancedarmordamagelimit-forge-1.19.2' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
