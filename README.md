@@ -61,9 +61,10 @@ This standalone project targets NeoForge 1.26.1.2 and requires Java 25.
 ./gradlew build
 ```
 
-The expression library was copied from the local `Auto-Leveling-1.20` Maven cache
-into `libs/`. The release JAR includes the expression classes and the applicable
-license and notice files.
+The release JAR embeds YiRanExpressionLib as a nested Jar-in-Jar dependency
+resolved from JitPack. Its classes are not merged into the mod's root package,
+so another mod can bundle the same library without a split-package conflict.
+The applicable license and notice files remain included.
 
 ## License
 
