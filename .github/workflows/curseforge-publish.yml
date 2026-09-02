@@ -8,7 +8,7 @@ on:
       release_tag:
         description: Version to publish, with or without a leading v
         required: true
-        default: 1.1.0
+        default: 1.2.0
         type: string
       target:
         description: Loader group or individual version to publish
@@ -68,6 +68,7 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
+          find build/libs -maxdepth 1 -type f -name '*.jar' -print
           expected="advanced-armor-damage-limit-forge-1.19.2-${CURSEFORGE_VERSION}-all.jar"
           test -f "build/libs/$expected"
           echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
@@ -129,6 +130,7 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
+          find build/libs -maxdepth 1 -type f -name '*.jar' -print
           expected="advanced-armor-damage-limit-forge-1.20.1-${CURSEFORGE_VERSION}-all.jar"
           test -f "build/libs/$expected"
           echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
@@ -190,6 +192,7 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
+          find build/libs -maxdepth 1 -type f -name '*.jar' -print
           expected="advanced-armor-damage-limit-neoforge-1.21.1-${CURSEFORGE_VERSION}.jar"
           test -f "build/libs/$expected"
           echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
@@ -251,6 +254,7 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
+          find build/libs -maxdepth 1 -type f -name '*.jar' -print
           expected="advanced-armor-damage-limit-neoforge-26.1.2-${CURSEFORGE_VERSION}.jar"
           test -f "build/libs/$expected"
           echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
@@ -312,6 +316,7 @@ jobs:
           ./gradlew build --no-daemon
       - name: Verify artifact
         run: |
+          find build/libs -maxdepth 1 -type f -name '*.jar' -print
           expected="advanced-armor-damage-limit-fabric-1.21.1-${CURSEFORGE_VERSION}.jar"
           test -f "build/libs/$expected"
           echo "CURSEFORGE_FILE=build/libs/$expected" >> "$GITHUB_ENV"
