@@ -3,11 +3,13 @@ package com.rinko1231.armordamagelimit.config;
 import com.mojang.logging.LogUtils;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.yiran.expressionlib.expr.Expression;
 import net.yiran.expressionlib.expr.ExpressionBuilder;
 import org.slf4j.Logger;
@@ -17,11 +19,11 @@ public final class ArmorProtectionConfig {
     private static final Set<String> ALLOWED_VARIABLES = Set.of("max_durability", "unbreaking");
     private static final Object EXPRESSION_LOCK = new Object();
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.DoubleValue maxArmorDurabilityLossPercent;
-    public static final ModConfigSpec.ConfigValue<String> armorDamageExpression;
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> itemProtectionBlacklist;
+    public static final ForgeConfigSpec SPEC;
+    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec.DoubleValue maxArmorDurabilityLossPercent;
+    public static final ForgeConfigSpec.ConfigValue<String> armorDamageExpression;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> itemProtectionBlacklist;
 
     private static volatile String compiledSource;
     private static volatile Expression compiledExpression;
@@ -30,18 +32,36 @@ public final class ArmorProtectionConfig {
     static {
         BUILDER.push("Config");
         maxArmorDurabilityLossPercent = BUILDER
-                .comment("Legacy fallback used when Armor Damage Expression is empty.")
+                .comment(
+                        "Legacy percentage cap used only when Armor Damage Expression is empty.",
+                        "0.2 means 20 percent of each armor item's maximum durability per hit.")
                 .defineInRange("Max Armor Durability Loss Percentage", 0.2, 0.01, 1.0);
         armorDamageExpression = BUILDER
-                .comment("Maximum durability damage per armor item. Variables: max_durability, unbreaking. Empty uses the legacy percentage.")
+                .comment(
+                        "Maximum durability damage dealt to this armor item by one incoming hit.",
+                        "This is a YiRan Expression Library expression evaluated for each armor item.",
+                        "Variables: max_durability = maximum durability of the item; unbreaking = Unbreaking level.",
+                        "The result is the per-item damage cap and may be a decimal value.",
+                        "Use ?: for conditional tiers and min(...)/max(...) for bounds.",
+                        "Examples (keep each expression on one line):",
+                        "  max(0, min(15 - unbreaking, max_durability * 0.05))",
+                        "  max_durability < 100 ? 4 : max_durability < 500 ? 10 : max_durability * 0.05",
+                        "  unbreaking >= 3 ? max_durability * 0.02 : max_durability * 0.05",
+                        "Only max_durability and unbreaking are allowed. Empty uses the legacy percentage setting.")
                 .define("Armor Damage Expression", "", value -> value instanceof String);
         itemProtectionBlacklist = BUILDER
-                .comment("Armor items that will not be protected.")
+                .comment(
+                        "Armor items that will not be protected.",
+                        "Use a list of item IDs, for example [\"minecraft:leather_helmet\"].")
                 .defineList("Item Protection Blacklist", List.of("modA:armorB"), value -> value instanceof String);
         SPEC = BUILDER.build();
     }
 
     private ArmorProtectionConfig() {
+    }
+
+    public static void setup() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "AdvancedArmorDamageLimit.toml");
     }
 
     public static float limitDamage(ItemStack armorItem, float incomingDamage) {
@@ -78,7 +98,7 @@ public final class ArmorProtectionConfig {
     }
 
     private static boolean isBlacklisted(ItemStack armorItem) {
-        var itemId = BuiltInRegistries.ITEM.getKey(armorItem.getItem());
+        var itemId = ForgeRegistries.ITEMS.getKey(armorItem.getItem());
         return itemId != null && itemProtectionBlacklist.get().contains(itemId.toString());
     }
 

@@ -18,17 +18,13 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-repositories {
-    ivy {
-        url = rootProject.file('libs')
-        patternLayout { artifact '[artifact].[ext]' }
-        metadataSources { artifact() }
-    }
-}
+def targetProperties = new Properties()
+file('gradle.properties').withInputStream { targetProperties.load(it) }
+targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
 
 version = mod_version
 group = mod_group_id
-base { archivesName = 'AdvancedArmorDamageLimit-Forge' }
+base { archivesName = 'advanced-armor-damage-limit-forge-1.19.2' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
@@ -69,7 +65,16 @@ mixin {
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
-sourceSets.main.java.srcDir rootProject.file('common/forge/src/main/java')
+sourceSets.main.java.srcDir 'src/main/java'
+
+repositories {
+    ivy {
+        url = rootProject.file('libs')
+        patternLayout { artifact '[artifact].[ext]' }
+        metadataSources { artifact() }
+    }
+    maven { url = 'https://jitpack.io' }
+}
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -136,4 +141,19 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.named('jar', Jar).configure {
+    from(rootProject.file('LICENSE')) {
+        into 'META-INF/licenses/advanced-armor-damage-limit'
+    }
+    from(rootProject.file('NOTICE.md')) {
+        into 'META-INF'
+    }
+    from(rootProject.file('licenses/YiRanExpressionLib-LICENSE.txt')) {
+        into 'META-INF/licenses/yiran-expression-lib'
+    }
+    from(rootProject.file('licenses/ArmorDamageLimit-MIT-LICENSE.txt')) {
+        into 'META-INF/licenses/armor-damage-limit-original'
+    }
 }
