@@ -110,9 +110,84 @@ publishing {
     }
 }
 
+def neoformMappingsDir = file("${gradle.gradleUserHomeDir}/caches/neoformruntime/intermediate_results")
+def neoformMappingCandidates = fileTree(neoformMappingsDir) {
+    include 'mergeMappings*_output.tsrg'
+}
+def mixinMappingsFile = layout.buildDirectory.file('mappings/advancedarmordamagelimit-mixin.tsrg')
+
+def generateMixinMappings = tasks.register('generateMixinMappings') {
+    inputs.files neoformMappingCandidates
+    outputs.file mixinMappingsFile
+    dependsOn tasks.named('createMinecraftArtifacts')
+    doLast {
+        def inputCandidates = fileTree(neoformMappingsDir) {
+            include 'mergeMappings*_output.tsrg'
+        }.files
+        if (inputCandidates.isEmpty()) {
+            throw new GradleException('NeoForm Mixin mappings were not generated.')
+        }
+        def inputFile = inputCandidates.max { it.lastModified() }
+        def lines = inputFile.readLines('UTF-8')
+        def classMap = [:]
+        lines.each { line ->
+            if (!line.startsWith('\t') && !line.trim().isEmpty() && !line.startsWith('tsrg2')) {
+                def parts = line.trim().split('\\s+')
+                if (parts.length >= 2) {
+                    classMap[parts[0]] = parts[1]
+                }
+            }
+        }
+        def mapDescriptor = { String descriptor ->
+            def result = new StringBuilder(descriptor.length())
+            int index = 0
+            while (index < descriptor.length()) {
+                if (descriptor.charAt(index) == 'L') {
+                    int end = descriptor.indexOf(';', index)
+                    if (end < 0) {
+                        result.append(descriptor.substring(index))
+                        break
+                    }
+                    def owner = descriptor.substring(index + 1, end)
+                    result.append('L').append(classMap.get(owner, owner)).append(';')
+                    index = end + 1
+                } else {
+                    result.append(descriptor.charAt(index++))
+                }
+            }
+            result.toString()
+        }
+        def outputLines = ['tsrg2 searge notch']
+        lines.each { line ->
+            if (line.startsWith('tsrg2') || line.trim().isEmpty()) {
+                return
+            }
+            def parts = line.trim().split('\\s+')
+            if (line.startsWith('\t')) {
+                if (parts.length == 2) {
+                    outputLines << "\t${parts[1]} ${parts[0]}"
+                } else if (parts.length >= 3) {
+                    outputLines << "\t${parts[2]} ${mapDescriptor(parts[1])} ${parts[0]}"
+                }
+            } else if (parts.length >= 2) {
+                outputLines << "${parts[1]} ${parts[0]}"
+            }
+        }
+        def outputFile = mixinMappingsFile.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.setText(outputLines.join(System.lineSeparator()), 'UTF-8')
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.compilerArgs.add("-AoutRefMapFile=${layout.buildDirectory.file('resources/main/advancedarmordamagelimit.refmap.json').get().asFile}")
+    options.compilerArgs.addAll([
+            "-AoutRefMapFile=${layout.buildDirectory.file('resources/main/advancedarmordamagelimit.refmap.json').get().asFile}",
+            "-AreobfTsrgFile=${mixinMappingsFile.get().asFile}",
+            '-AmappingTypes=tsrg',
+            '-AdefaultObfuscationEnv=searge',
+    ])
+    dependsOn generateMixinMappings
 }
 
 tasks.named('jar', Jar).configure {
