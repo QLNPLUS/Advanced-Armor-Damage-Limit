@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+
+- Refreshed the Fabric 1.21.1 release package.
+- Existing expression settings and armor durability behavior remain unchanged.
+
 ## 1.1.0
 
 - Packaged YiRanExpressionLib as a nested Fabric dependency to avoid duplicate library packages.
