@@ -183,12 +183,17 @@ def generateMixinMappings = tasks.register('generateMixinMappings') {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs.addAll([
-            "-AoutRefMapFile=${layout.buildDirectory.file('resources/main/advancedarmordamagelimit.refmap.json').get().asFile}",
+            "-AoutRefMapFile=${layout.buildDirectory.file('generated/mixin/advancedarmordamagelimit.refmap.json').get().asFile}",
             "-AreobfTsrgFile=${mixinMappingsFile.get().asFile}",
             '-AmappingTypes=tsrg',
             '-AdefaultObfuscationEnv=searge',
     ])
     dependsOn generateMixinMappings
+}
+
+tasks.named('processResources') {
+    dependsOn tasks.named('compileJava')
+    from(layout.buildDirectory.file('generated/mixin/advancedarmordamagelimit.refmap.json'))
 }
 
 tasks.named('jar', Jar).configure {
