@@ -136,9 +136,20 @@ public final class ArmorProtectionConfig {
     private static void writeDefaults(Properties properties) throws IOException {
         properties.setProperty("max_armor_durability_loss_percent", "0.2");
         properties.setProperty("armor_damage_expression", "");
-        properties.setProperty("item_protection_blacklist", "");
+        properties.setProperty("item_protection_blacklist", "modA:armorB");
         try (Writer writer = Files.newBufferedWriter(CONFIG_FILE)) {
-            properties.store(writer, "Advanced Armor Damage Limit configuration");
+            writer.write("# Advanced Armor Damage Limit configuration\n");
+            writer.write("# Fabric uses Java properties syntax: one key=value entry per line.\n");
+            writer.write("# max_armor_durability_loss_percent is the legacy fallback; 0.2 means 20 percent.\n");
+            writer.write("# armor_damage_expression caps durability damage for each armor item.\n");
+            writer.write("# Available variables: max_durability (item maximum durability) and unbreaking (level).\n");
+            writer.write("# Use ?: for conditional tiers and min(...)/max(...) for bounds. Keep each expression on one line.\n");
+            writer.write("# Example: max(0, min(15 - unbreaking, max_durability * 0.05))\n");
+            writer.write("# Example: max_durability < 100 ? 4 : max_durability < 500 ? 10 : max_durability * 0.05\n");
+            writer.write("# Example: unbreaking >= 3 ? max_durability * 0.02 : max_durability * 0.05\n");
+            writer.write("# Leave armor_damage_expression empty to use max_armor_durability_loss_percent.\n");
+            writer.write("# item_protection_blacklist is a comma-separated list, for example minecraft:leather_helmet.\n");
+            properties.store(writer, null);
         }
     }
 

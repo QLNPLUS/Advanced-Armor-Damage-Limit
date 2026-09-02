@@ -4,9 +4,13 @@ plugins {
     id 'idea'
 }
 
+def targetProperties = new Properties()
+file('gradle.properties').withInputStream { targetProperties.load(it) }
+targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
+
 version = fabric_version
 group = mod_group_id
-base { archivesName = 'AdvancedArmorDamageLimit-Fabric' }
+base { archivesName = 'advanced-armor-damage-limit-fabric-1.21.1' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
@@ -62,4 +66,19 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.named('jar', Jar).configure {
+    from(rootProject.file('LICENSE')) {
+        into 'META-INF/licenses/advanced-armor-damage-limit'
+    }
+    from(rootProject.file('NOTICE.md')) {
+        into 'META-INF'
+    }
+    from(rootProject.file('licenses/YiRanExpressionLib-LICENSE.txt')) {
+        into 'META-INF/licenses/yiran-expression-lib'
+    }
+    from(rootProject.file('licenses/ArmorDamageLimit-MIT-LICENSE.txt')) {
+        into 'META-INF/licenses/armor-damage-limit-original'
+    }
 }
