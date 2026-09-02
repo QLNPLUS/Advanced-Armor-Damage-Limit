@@ -1,8 +1,7 @@
 # Armor Damage Limit
 
 This repository is an MIT-licensed extension of [ArmorDamageLimit](https://github.com/Rinko1231/ArmorDamageLimit).
-It provides separate build targets for Forge 1.19.2, Forge 1.20.1, NeoForge 1.21.1,
-NeoForge 26.1.2, and Fabric 1.21.1.
+This branch is the standalone Forge 1.19.2 build.
 
 ## Expression-based durability cap
 
@@ -30,11 +29,7 @@ Java 17 is required for Forge 1.19.2 and Forge 1.20.1. Java 21 is required for
 NeoForge 1.21.1 and Fabric 1.21.1. NeoForge 26.1.2 requires Java 25.
 
 ```shell
-./gradlew :forge-1.19.2:build
-./gradlew :forge-1.20.1:build
-./gradlew :neoforge-1.21.1:build
-./gradlew :neoforge-26.1.2:build
-./gradlew :fabric-1.21.1:build
+./gradlew build
 ```
 
 The expression library was copied from the local `Auto-Leveling-1.20` Maven cache
