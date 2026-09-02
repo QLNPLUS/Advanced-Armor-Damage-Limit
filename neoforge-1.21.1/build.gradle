@@ -5,6 +5,14 @@ plugins {
     id 'idea'
 }
 
+repositories {
+    ivy {
+        url = rootProject.file('libs')
+        patternLayout { artifact '[artifact].[ext]' }
+        metadataSources { artifact() }
+    }
+}
+
 version = mod_version
 group = mod_group_id
 base { archivesName = 'advanced-armor-damage-limit-neoforge-1.21.1' }
@@ -53,16 +61,14 @@ configurations {
 }
 
 dependencies {
-    implementation files(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
-}
-
-tasks.named('jar', Jar).configure {
-    from {
-        zipTree(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
-    } {
-        exclude 'META-INF/**'
-        exclude 'pack.mcmeta'
-        exclude 'net/yiran/expressionlib/YiRanExpressionLib.class'
+    def expressionLib = implementation('com.github.yiran1457:YiRanExpressionLib:1.0.1') {
+        artifact { name = 'YiRanExpressionLib-1.0.1-universal' }
+    }
+    jarJar(expressionLib) {
+        version {
+            strictly '[1.0.1]'
+            prefer '1.0.1'
+        }
     }
 }
 

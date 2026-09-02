@@ -10,6 +10,7 @@ base { archivesName = 'advanced-armor-damage-limit-fabric-1.21.1' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
+    maven { url = rootProject.file('libs/maven') }
     maven { url = 'https://maven.fabricmc.net/' }
 }
 
@@ -17,7 +18,8 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${loader_version}"
-    compileOnly files(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
+    def expressionLib = implementation('com.github.yiran1457:YiRanExpressionLib:1.0.1')
+    include(expressionLib)
 }
 
 loom {
@@ -34,12 +36,6 @@ processResources {
 }
 
 tasks.named('jar', Jar).configure {
-    from {
-        zipTree(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
-    } {
-        exclude 'META-INF/**'
-        exclude 'pack.mcmeta'
-    }
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,

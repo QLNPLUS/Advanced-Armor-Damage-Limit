@@ -18,6 +18,15 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
+repositories {
+    // Resolve the local artifact under the version exposed by its Forge metadata.
+    ivy {
+        url = rootProject.file('libs')
+        patternLayout { artifact '[artifact].[ext]' }
+        metadataSources { artifact() }
+    }
+}
+
 version = mod_version
 group = mod_group_id
 base { archivesName = 'advanced-armor-damage-limit-forge-1.19.2' }
@@ -66,16 +75,18 @@ sourceSets.main.java.srcDir rootProject.file('common/forge/src/main/java')
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    compileOnly files(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
+    def expressionLib = implementation('com.github.yiran1457:YiRanExpressionLib:1.0.1') {
+        artifact { name = 'YiRanExpressionLib-1.0.1-universal' }
+    }
+    jarJar(expressionLib)
+
+    project.extensions.getByName('jarJar').versionInformation {
+        ranged(dependency(expressionLib), '[1.0.1]')
+    }
 }
 
-tasks.named('jar', Jar).configure {
-    from {
-        zipTree(rootProject.file('libs/YiRanExpressionLib-1.0.0-universal.jar'))
-    } {
-        exclude 'META-INF/**'
-        exclude 'pack.mcmeta'
-    }
+tasks.named('build') {
+    dependsOn 'reobfJarJar'
 }
 
 tasks.named('processResources', ProcessResources).configure {
