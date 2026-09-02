@@ -124,8 +124,11 @@ def generateMixinMappings = tasks.register('generateMixinMappings') {
         def inputCandidates = fileTree(neoformMappingsDir) {
             include 'mergeMappings*_output.tsrg'
         }.files
+        def outputFile = mixinMappingsFile.get().asFile
+        outputFile.parentFile.mkdirs()
         if (inputCandidates.isEmpty()) {
-            throw new GradleException('NeoForm Mixin mappings were not generated.')
+            outputFile.setText('tsrg2 searge notch' + System.lineSeparator(), 'UTF-8')
+            return
         }
         def inputFile = inputCandidates.max { it.lastModified() }
         def lines = inputFile.readLines('UTF-8')
@@ -173,8 +176,6 @@ def generateMixinMappings = tasks.register('generateMixinMappings') {
                 outputLines << "${parts[1]} ${parts[0]}"
             }
         }
-        def outputFile = mixinMappingsFile.get().asFile
-        outputFile.parentFile.mkdirs()
         outputFile.setText(outputLines.join(System.lineSeparator()), 'UTF-8')
     }
 }

@@ -17,9 +17,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Player.class)
+@Mixin(value = Player.class, remap = false)
 public abstract class ArmorDurabilityMixin {
-    @Inject(method = "hurtArmor", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hurtArmor", at = @At("HEAD"), cancellable = true, remap = false)
     private void modifyArmorDurability(DamageSource source, float amount, CallbackInfo callbackInfo) {
         Player player = (Player) (Object) this;
         if (amount > 0.0F) {
