@@ -65,6 +65,7 @@ configurations {
 }
 
 dependencies {
+    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
     def expressionLib = implementation('com.github.yiran1457:YiRanExpressionLib:1.0.1') {
         artifact { name = 'YiRanExpressionLib-1.0.1-universal' }
     }
@@ -111,6 +112,7 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    options.compilerArgs.add("-AoutRefMapFile=${layout.buildDirectory.file('resources/main/advancedarmordamagelimit.refmap.json').get().asFile}")
 }
 
 tasks.named('jar', Jar).configure {
