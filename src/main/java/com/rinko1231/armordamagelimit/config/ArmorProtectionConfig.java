@@ -3,9 +3,13 @@ package com.rinko1231.armordamagelimit.config;
 import com.mojang.logging.LogUtils;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.yiran.expressionlib.expr.Expression;
 import net.yiran.expressionlib.expr.ExpressionBuilder;
 import org.slf4j.Logger;
@@ -15,11 +19,11 @@ public final class ArmorProtectionConfig {
     private static final Set<String> ALLOWED_VARIABLES = Set.of("max_durability", "unbreaking");
     private static final Object EXPRESSION_LOCK = new Object();
 
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.DoubleValue maxArmorDurabilityLossPercent;
-    public static final ModConfigSpec.ConfigValue<String> armorDamageExpression;
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> itemProtectionBlacklist;
+    public static final ForgeConfigSpec SPEC;
+    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    public static final ForgeConfigSpec.DoubleValue maxArmorDurabilityLossPercent;
+    public static final ForgeConfigSpec.ConfigValue<String> armorDamageExpression;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> itemProtectionBlacklist;
 
     private static volatile String compiledSource;
     private static volatile Expression compiledExpression;
@@ -56,7 +60,11 @@ public final class ArmorProtectionConfig {
     private ArmorProtectionConfig() {
     }
 
-    public static float limitDamage(ItemStack armorItem, float incomingDamage, int unbreakingLevel) {
+    public static void setup() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SPEC, "AdvancedArmorDamageLimit.toml");
+    }
+
+    public static float limitDamage(ItemStack armorItem, float incomingDamage) {
         if (incomingDamage <= 0.0F || isBlacklisted(armorItem)) {
             return incomingDamage;
         }
@@ -73,7 +81,8 @@ public final class ArmorProtectionConfig {
                 maximumDamage = maxDurability * maxArmorDurabilityLossPercent.get();
             } else {
                 Expression expression = expressionFor(source);
-                maximumDamage = expression.evaluate(maxDurability, unbreakingLevel);
+                double unbreaking = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, armorItem);
+                maximumDamage = expression.evaluate(maxDurability, unbreaking);
             }
         } catch (RuntimeException exception) {
             reportInvalid(source, exception);
@@ -89,7 +98,7 @@ public final class ArmorProtectionConfig {
     }
 
     private static boolean isBlacklisted(ItemStack armorItem) {
-        var itemId = BuiltInRegistries.ITEM.getKey(armorItem.getItem());
+        var itemId = ForgeRegistries.ITEMS.getKey(armorItem.getItem());
         return itemId != null && itemProtectionBlacklist.get().contains(itemId.toString());
     }
 

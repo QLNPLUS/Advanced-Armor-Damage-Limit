@@ -18,13 +18,9 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-repositories {
-    ivy {
-        url = rootProject.file('libs')
-        patternLayout { artifact '[artifact].[ext]' }
-        metadataSources { artifact() }
-    }
-}
+def targetProperties = new Properties()
+file('gradle.properties').withInputStream { targetProperties.load(it) }
+targetProperties.each { propertyName, propertyValue -> project.ext.set(propertyName, propertyValue) }
 
 version = mod_version
 group = mod_group_id
@@ -69,13 +65,15 @@ mixin {
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
-sourceSets.main.java {
-    srcDir rootProject.file('common/forge/src/main/java')
-    exclude 'com/rinko1231/armordamagelimit/mixin/ArmorDurabilityMixin.java'
-}
+sourceSets.main.java.srcDir 'src/main/java'
 
-tasks.named('compileJava', JavaCompile).configure {
-    source rootProject.file('common/forge-1.20.1/src/main/java/com/rinko1231/armordamagelimit/mixin/ArmorDurabilityMixin.java')
+repositories {
+    ivy {
+        url = rootProject.file('libs')
+        patternLayout { artifact '[artifact].[ext]' }
+        metadataSources { artifact() }
+    }
+    maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
