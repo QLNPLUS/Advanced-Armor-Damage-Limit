@@ -9,6 +9,9 @@ displayName="${mod_name}"
 authors="${mod_authors}"
 description='''${mod_description}'''
 
+[[mixins]]
+config="advancedarmordamagelimit.mixins.json"
+
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"
@@ -21,11 +24,4 @@ description='''${mod_description}'''
     type="required"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="yiranexpressionlib"
-    type="required"
-    versionRange="[1.0.1]"
-    ordering="AFTER"
     side="BOTH"

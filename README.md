@@ -1,12 +1,8 @@
 # Advanced Armor Damage Limit
 
-Advanced Armor Damage Limit is released under GNU Affero General Public License v3.0 only
+This project is released under GNU Affero General Public License v3.0 only
 (AGPL-3.0-only). It extends [ArmorDamageLimit](https://github.com/Rinko1231/ArmorDamageLimit)
 with expression-based per-item durability limits.
-
-## Build target
-
-This branch is the standalone NeoForge 26.1.2 build.
 
 ## Expression-based durability cap
 
@@ -46,18 +42,47 @@ The expressions must be written on one line in TOML or properties files. The
 original fire-resistant armor behavior and item blacklist are preserved. Each
 armor slot is evaluated independently.
 
++### Syntax and examples
+
+The expression library supports numeric arithmetic, comparison operators, parentheses,
+the ternary conditional operator, and the built-in functions `min`, `max`, `abs`,
+`sqrt`, and `pow`.
+
+```text
+max_durability < 100 ? 4 : max_durability < 500 ? 10 : max_durability * 0.05
+```
+
+This gives armor with less than 100 maximum durability a cap of 4, armor from
+100 through 499 a cap of 10, and armor with at least 500 a cap of 5 percent.
+The same expression must be written on one line in TOML or properties files.
+
+```text
+unbreaking < 2 ? 12 : unbreaking < 4 ? 8 : 4
+```
+
+This creates three Unbreaking tiers: levels 0-1 use 12, levels 2-3 use 8,
+and level 4 or higher uses 4.
+
+```text
+max(0, min(max_durability < 500 ? 10 : max_durability * 0.05, 15 - unbreaking))
+```
+
+This combines a durability-based tier with an Unbreaking-based cap. Use
+`max(0, ...)` when a subtraction could otherwise produce a negative result.
+Comparison results are numeric: true is 1 and false is 0.
+
 ## Building
 
-Java 17 is required for Forge 1.19.2 and Forge 1.20.1. Java 21 is required for
-NeoForge 1.21.1 and Fabric 1.21.1. NeoForge 1.26.1.2 requires Java 25.
+This standalone project targets NeoForge 1.26.1.2 and requires Java 25.
 
 ```shell
 ./gradlew build
 ```
 
-The expression library was copied from the local `Auto-Leveling-1.20` Maven cache
-into `libs/`. Release JARs include the expression classes and the applicable
-license and notice files.
+The release JAR embeds YiRanExpressionLib 1.0.1 as a nested Jar-in-Jar dependency
+resolved from the deterministic local artifact in `libs`. Its classes are not merged into the mod's root package,
+so another mod can bundle the same library without a split-package conflict.
+The applicable license and notice files remain included.
 
 ## License
 
