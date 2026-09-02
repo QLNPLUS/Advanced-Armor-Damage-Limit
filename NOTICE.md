@@ -13,7 +13,7 @@ The complete original MIT text is included at
 
 ## YiRanExpressionLib
 
-`libs/YiRanExpressionLib-1.0.0-universal.jar` is YiRanExpressionLib by yiran1457.
+`libs/YiRanExpressionLib-1.0.1-universal.jar` is YiRanExpressionLib by yiran1457.
 The library is licensed under the GNU Affero General Public License, version 3.
 Its corresponding source is available at
 https://github.com/yiran1457/YiRanExpressionLib.

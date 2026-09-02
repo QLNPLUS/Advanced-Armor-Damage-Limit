@@ -4,17 +4,9 @@ Advanced Armor Damage Limit is released under GNU Affero General Public License 
 (AGPL-3.0-only). It extends [ArmorDamageLimit](https://github.com/Rinko1231/ArmorDamageLimit)
 with expression-based per-item durability limits.
 
-## Build targets
+## Build target
 
-This multi-loader workspace contains:
-
-- Forge 1.19.2
-- Forge 1.20.1
-- NeoForge 1.21.1
-- NeoForge 1.26.1.2
-- Fabric 1.21.1
-
-Use the standalone project folders when working on or releasing a single loader target.
+This branch is the standalone Forge 1.20.1 build.
 
 ## Expression-based durability cap
 
@@ -60,11 +52,7 @@ Java 17 is required for Forge 1.19.2 and Forge 1.20.1. Java 21 is required for
 NeoForge 1.21.1 and Fabric 1.21.1. NeoForge 1.26.1.2 requires Java 25.
 
 ```shell
-./gradlew :forge-1.19.2:build
-./gradlew :forge-1.20.1:build
-./gradlew :neoforge-1.21.1:build
-./gradlew :neoforge-26.1.2:build
-./gradlew :fabric-1.21.1:build
+./gradlew build
 ```
 
 The expression library was copied from the local `Auto-Leveling-1.20` Maven cache
