@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+
+- Improved startup compatibility for the NeoForge 1.21.1 release.
+- Existing expression settings and armor durability behavior remain unchanged.
+
 ## 1.1.0
 
 - Packaged YiRanExpressionLib as a nested Jar-in-Jar dependency to avoid duplicate library packages.
